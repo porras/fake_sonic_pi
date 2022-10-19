@@ -124,4 +124,8 @@ class FakeSonicPi
   %i[use_real_time at].each do |cmd|
     define_method(cmd) { |*_args| }
   end
+
+  def include(*args)
+    self.class.include(*args)
+  end
 end
