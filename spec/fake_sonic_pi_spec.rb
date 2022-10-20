@@ -49,4 +49,17 @@ RSpec.describe FakeSonicPi do
 
     expect(sp).to have_output(:play, 12).at(0, 1)
   end
+
+  it 'implements #at' do
+    sp = FakeSonicPi.new do
+      live_loop :kick do
+        at(0.25, 0.75) { sample :bd_haus }
+        sleep 1
+      end
+    end
+
+    sp.run(2)
+
+    expect(sp).to have_output(:sample, :bd_haus).at(0.25, 0.75, 1.25, 1.75)
+  end
 end

@@ -21,7 +21,14 @@ class FakeSonicPi
     @events.add_batch(events)
     instance_eval(&@definition)
     loop do
+      # remove terminated fibers (`at` blocks that already ran)
+      @fibers.select! { |f, _b| f.alive? }
+
+      # split fibers waiting for an event, and fibers scheduled for a particular
+      # beat (sleeping or scheduled with `at`)
       waiting_fibers, scheduled_fibers = @fibers.partition { |_f, b| b.nil? }
+
+      # from the scheduled ones, remove those scheduled for after the max number of beats
       scheduled_fibers.reject! { |_f, b| b > beats }
 
       # give all waiting fibers a chance
@@ -66,6 +73,15 @@ class FakeSonicPi
   def sleep(n)
     Thread.current[:slept] = true
     Fiber.yield @beat + n
+  end
+
+  def at(*beats, &block)
+    # for each specified beat, create a fiber that calls the block once, and
+    # schedule it for then.
+    beats.each do |beat|
+      f = Fiber.new(&block)
+      @fibers[f] = @beat + beat
+    end
   end
 
   def sync(event_name)
@@ -121,7 +137,7 @@ class FakeSonicPi
 
   # no-ops (sonic pi commands whose effect is not relevant here, but need to be
   # implemented so that the test doesn't fail)
-  %i[use_real_time at].each do |cmd|
+  %i[use_real_time].each do |cmd|
     define_method(cmd) { |*_args| }
   end
 
