@@ -1,5 +1,5 @@
-require 'rspec/matchers'
-require_relative '../fake_sonic_pi'
+require "rspec/matchers"
+require_relative "../fake_sonic_pi"
 
 RSpec::Matchers.define :have_output do |command, *args|
   match do |sp|

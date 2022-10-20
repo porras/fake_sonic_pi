@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'fake_sonic_pi/rspec'
+
+require "fake_sonic_pi/rspec"
 
 RSpec.describe FakeSonicPi do
   it "has a version number" do
@@ -10,7 +11,7 @@ RSpec.describe FakeSonicPi do
   # class was extracted from https://github.com/porras/sonic-pi-akai-apc-mini
   # and most of it (other than this super basic test) was covered implicitly by
   # its tests. Little by little everything should get covered here.
-  example 'basic test' do
+  example "basic test" do
     sp = FakeSonicPi.new do
       live_loop :drums do
         sample :bd_haus
@@ -29,7 +30,7 @@ RSpec.describe FakeSonicPi do
     expect(sp).to have_output(:play, :c2).at(0, 1)
   end
 
-  it 'allows including modules' do
+  it "allows including modules" do
     mod = Module.new do
       def play_bass(note)
         play note - 12
@@ -50,7 +51,7 @@ RSpec.describe FakeSonicPi do
     expect(sp).to have_output(:play, 12).at(0, 1)
   end
 
-  it 'implements #at' do
+  it "implements #at" do
     sp = FakeSonicPi.new do
       live_loop :kick do
         at(0.25, 0.75) { sample :bd_haus }

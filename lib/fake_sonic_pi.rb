@@ -1,7 +1,7 @@
-require 'fiber' # for Ruby < 3.0
-require 'set'
-require_relative 'fake_sonic_pi/version'
-require_relative 'fake_sonic_pi/events'
+require "fiber" # for Ruby < 3.0
+require "set"
+require_relative "fake_sonic_pi/version"
+require_relative "fake_sonic_pi/events"
 
 class FakeSonicPi
   class NoSleep < StandardError; end
@@ -91,7 +91,7 @@ class FakeSonicPi
       Thread.current[:slept] = true
       # find event in current beat and return its value, otherwise let the other
       # fibers progress, then try again
-      if event = @events.find(@beat, event_name)
+      if (event = @events.find(@beat, event_name))
         event.processed_by << Fiber.current
         return event.value
       else
@@ -101,7 +101,7 @@ class FakeSonicPi
   end
 
   def get(name, default = nil)
-    if event = @events.most_recent(@beat, name)
+    if (event = @events.most_recent(@beat, name))
       event.value
     else
       default
@@ -112,7 +112,7 @@ class FakeSonicPi
     @events.add(@beat, name, value)
   end
 
-  alias cue set
+  alias_method :cue, :set
 
   def in_thread
     # just do it ;) fibers are awesome :D

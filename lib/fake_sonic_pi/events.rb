@@ -17,7 +17,7 @@ class FakeSonicPi
     end
 
     def next_beat(beat)
-      @events.map(&:first).sort.select { |b| b > beat }.first
+      @events.map(&:first).sort.find { |b| b > beat }
     end
 
     def find(beat, name)
