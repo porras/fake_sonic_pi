@@ -136,7 +136,11 @@ class FakeSonicPi
     block.call(Node.new(:fx, args))
   end
 
-  Node = Struct.new(:command, :args)
+  Node = Struct.new(:command, :args) do
+    def kill
+      # no-op
+    end
+  end
 
   # no-ops (sonic pi commands whose effect is not relevant here, but need to be
   # implemented so that the test doesn't fail)
