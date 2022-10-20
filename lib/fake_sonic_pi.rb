@@ -59,13 +59,15 @@ class FakeSonicPi
   end
 
   def live_loop(name, &block)
+    # create a fiber that runs the block repeatedly...
     f = Fiber.new do
       loop do
         Thread.current[:slept] = false
-        instance_eval(&block)
+        block.call
         raise NoSleep, "live_loop #{name} didn't sleep" unless Thread.current[:slept]
       end
     end
+    # ...and schedule it for now
     @fibers[f] = @beat
   end
 
@@ -118,7 +120,8 @@ class FakeSonicPi
   end
 
   def stop
-    sleep 999
+    # kind of stop :D
+    sleep Float::INFINITY
   end
 
   # commands we store as output, returning a (fake) node
